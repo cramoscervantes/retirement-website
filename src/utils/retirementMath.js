@@ -16,7 +16,7 @@ export function calculateRetirement(inputs) {
     let ageRanOutOfMoney = null
     let balance = currentSavings
 
-    for (let i = 0; i < yearsUntilRetirement; i++) {
+    for (let i = 0; i <= yearsUntilRetirement; i++) {
         const newBalance = ( balance * Math.pow(1 + monthlyPreRetirementRate, 12) ) +
                            ( monthlyContribution * (Math.pow(1 + monthlyPreRetirementRate, 12) - 1) 
                            / monthlyPreRetirementRate)  
@@ -44,7 +44,7 @@ export function calculateRetirement(inputs) {
     
 
     // Phase 2 Decumulation
-    for (let i = 0; i <= yearsInRetirement; i++) {
+    for (let i = 1; i <= yearsInRetirement; i++) {
         const newBalance = ( balance * Math.pow(1 + monthlyPostRetirementRate, 12) )
         balance = newBalance
 
