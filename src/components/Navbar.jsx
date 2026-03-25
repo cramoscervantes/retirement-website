@@ -25,13 +25,27 @@ function Navbar() {
         }
     }
 
-    return (
-        <nav className="w-full bg-slate-100 dark:bg-slate-900 flex p-4 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white gap-6">
-            <NavLink to="/">Home</NavLink>
-            <NavLink to="/calculator">Calculator</NavLink>
-            <NavLink to="/budget">Budget</NavLink>
+    function navLinkClass(isActive) {
+        if ( isActive === true ) {
+            return "text-emerald-600"
+        } else {
+            return "text-slate-900 dark:text-white hover:text-emerald-600"
+        }
+    }
 
-            <button onClick={toggleDarkMode} className="ml-auto">{isDark ? "Light Mode" : "Dark Mode"}</button>
+    return (
+        <nav className="w-full bg-slate-100 dark:bg-slate-900 flex p-4 border-b border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white items-center">
+            <div className="flex-1">
+            <p>RetirementSimplified</p>
+            </div>
+            <div className="flex flex-1 justify-center gap-6">
+            <NavLink className={({ isActive }) => navLinkClass(isActive) } to="/">Home</NavLink>
+            <NavLink className={({ isActive }) => navLinkClass(isActive) } to="/calculator">Calculator</NavLink>
+            <NavLink className={({ isActive }) => navLinkClass(isActive) } to="/budget">Budget</NavLink>
+            </div>
+            <div className="flex flex-1 justify-end">
+            <button onClick={toggleDarkMode} className="px-4 py-2 bg-black rounded-sm hover:bg-emerald-700 text-white">{isDark ? "Light Mode" : "Dark Mode"}</button>
+            </div>
         </nav>
     )
 }
