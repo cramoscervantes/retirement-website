@@ -6,7 +6,7 @@ import TableRow from '../components/TableRow'
 import { formatCurrency, formatImpact, formatAxisCurrency } from '../utils/formatters'
 
 function Calculator() {
-    const { inputs, results, handleChange, calculate, whatIfFields, whatIfResults, handleWhatIfChange } = useRetirementCalc()
+    const { inputs, results, handleChange, calculate, whatIfFields, whatIfResults, handleWhatIfChange, resetWhatIfFields } = useRetirementCalc()
     
     // What if Menu Toggle
     const [ whatIfOpen, setWhatIfOpen ] = useState(false)
@@ -49,11 +49,49 @@ function Calculator() {
                                         <p className="text-slate-700 dark:text-slate-300 p-2 text-sm italic">Leave any field blank to use your main scenario value.</p>
 
                                         <div className="grid grid-cols-2 gap-4 p-2">
-                                            <FormField label="Retirement Age" name="retirementAge" value={whatIfFields.retirementAge} onChange={handleWhatIfChange} />
-                                            <FormField label="Current Savings ($)" name="currentSavings" value={whatIfFields.currentSavings} onChange={handleWhatIfChange} />
-                                            <FormField label="Monthly Contribution ($)" name="monthlyContribution" value={whatIfFields.monthlyContribution} onChange={handleWhatIfChange} colSpan={true} />
-                                            <FormField label="Pre-Retirement Rate of Return (%)" name="preRetirementRate" value={whatIfFields.preRetirementRate} onChange={handleWhatIfChange} colSpan={true} />
-                                            <FormField label="Monthly Retirement Budget (% of income)" name="monthlyRetirementBudget" value={whatIfFields.monthlyRetirementBudget} onChange={handleWhatIfChange} colSpan={true} />
+                                            <FormField 
+                                                label="Retirement Age" 
+                                                name="retirementAge" 
+                                                value={whatIfFields.retirementAge} 
+                                                onChange={handleWhatIfChange} 
+                                                placeholder={inputs.retirementAge} 
+                                            />
+                                            <FormField 
+                                                label="Current Savings ($)" 
+                                                name="currentSavings" 
+                                                value={whatIfFields.currentSavings} 
+                                                onChange={handleWhatIfChange} 
+                                                placeholder={inputs.currentSavings}
+                                            />
+                                            <FormField 
+                                                label="Monthly Contribution ($)" 
+                                                name="monthlyContribution" 
+                                                value={whatIfFields.monthlyContribution} 
+                                                onChange={handleWhatIfChange} 
+                                                colSpan={true} 
+                                                placeholder={inputs.monthlyContribution}
+                                            />
+                                            <FormField 
+                                                label="Pre-Retirement Rate of Return (%)" 
+                                                name="preRetirementRate" 
+                                                value={whatIfFields.preRetirementRate} 
+                                                onChange={handleWhatIfChange} 
+                                                colSpan={true} 
+                                                placeholder={inputs.preRetirementRate}
+                                            />
+                                            <FormField 
+                                                label="Monthly Retirement Budget (% of income)" 
+                                                name="monthlyRetirementBudget" 
+                                                value={whatIfFields.monthlyRetirementBudget} 
+                                                onChange={handleWhatIfChange} 
+                                                colSpan={true} 
+                                                placeholder={inputs.monthlyRetirementBudget}
+                                            />
+                                        </div>
+                                        <div className="p-2">
+                                            <button  type="button" className="px-4 py-2 border-2 border-emerald-600 rounded-md w-full hover:bg-slate-100 dark:hover:bg-slate-900 text-emerald-600 font-bold" onClick={resetWhatIfFields}>
+                                                Clear What If Fields
+                                            </button>
                                         </div>
                                     </div>
                                 }

@@ -62,10 +62,23 @@ function useRetirementCalc() {
         const anyFilled = Object.values(whatIfFields).some(v => v !== "")
         if (anyFilled) {
             setWhatIfResults(calculateRetirement(mergedInputs))
+        } else {
+            setWhatIfResults(null)
         }
     }
 
-    return { inputs, results, handleChange, calculate, whatIfFields, whatIfResults, handleWhatIfChange }
+    function resetWhatIfFields() {
+        setWhatIfResults(null)
+        setWhatIfFields({
+        retirementAge: "",
+        currentSavings: "",
+        monthlyContribution: "",
+        preRetirementRate: "",
+        monthlyRetirementBudget: "",
+        })
+    }
+
+    return { inputs, results, handleChange, calculate, whatIfFields, whatIfResults, handleWhatIfChange, resetWhatIfFields }
 }
 
 export default useRetirementCalc
