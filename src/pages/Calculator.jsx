@@ -25,7 +25,7 @@ function Calculator() {
         <div className="bg-slate-100 dark:bg-slate-900 min-h-screen p-6">
         <h1 className="text-4xl text-center font-bold mb-6 text-slate-700 dark:text-slate-300">Retirement Calculator</h1>
             <div className="flex gap-6 flex-wrap">
-                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 max-w-sm min-w-110">
+                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 max-w-sm min-w-110 self-start">
                     <form className="grid grid-cols-2 gap-4">
                         <FormField label="Current Age" name="currentAge" value={inputs.currentAge} onChange={handleChange} colSpan={true} />
                         <FormField label="Annual Pre-Tax Income" name="currentIncome" value={inputs.currentIncome} onChange={handleChange} />
@@ -101,148 +101,166 @@ function Calculator() {
                         </div>
                     </form>
                 </div>
+                {/* Right Column Wrapper */}
+                <div className="flex flex-col gap-6 flex-1">
+                    {/* Chart Card */}
+                    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 flex flex-col min-h-150">
+                        <h2 className="text-emerald-600 text-3xl font-bold text-center p-4">Savings Growth Over Time</h2>
+                        
+        
+                        <div className="flex-1">
+                            {results
+                                ? <ResponsiveContainer width="100%" height="100%" >
+                                    <LineChart
+                                        width={800}
+                                        height={400}
+                                        data={chartData}
+                                    >
+                                        <CartesianGrid vertical={false} stroke="#D9DDDC" />
+                                        <XAxis dataKey="age" />
+                                        <YAxis width={80} tickFormatter={formatAxisCurrency} />
+                                        <Tooltip
+                                            contentStyle={{ backgroundColor: '#334155', border: 'none' }}
+                                            labelStyle={{ color: 'white' }} 
+                                            labelFormatter={(label) => 'Age: ' + label}
+                                            formatter={(value, name) => {
+                                                return [
+                                                    formatCurrency(value),
+                                                    name === 'balance' ? 'Current Scenario' : 'What If Scenario'
+                                                ]
+                                            }}
+                                        />
+                                        <Legend 
+                                            formatter={(value) => {
+                                                return (value === 'balance') ? 'Current Scenario' : 'What If Scenario'
+                                            }}
+                                            verticalAlign="top"
+                                        />
+                                        <Line
+                                            type="monotone"
+                                            dataKey="balance"
+                                            stroke='#3b82f6'
+                                            strokeWidth={3}
+                                            dot={(props) => {
+                                                if (props.payload.age === inputs.currentAge + results.yearsUntilRetirement) {
+                                                    return <circle cx={props.cx} cy={props.cy} r={5} fill="#3b82f6" />  
+                                                }
+                                                return null
+                                            }}
+                                        />
 
-                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 flex-1">
-                    <h2 className="text-emerald-600 text-3xl font-bold text-center p-4">Savings Growth Over Time</h2>
-                    {results && 
-                        <ResponsiveContainer width="100%">
-                            <LineChart
-                                width={800}
-                                height={400}
-                                data={chartData}
-                            >
-                                <CartesianGrid vertical={false} stroke="#D9DDDC" />
-                                <XAxis dataKey="age" />
-                                <YAxis width={80} tickFormatter={formatAxisCurrency} />
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: '#334155', border: 'none' }}
-                                    labelStyle={{ color: 'white' }} 
-                                    labelFormatter={(label) => 'Age: ' + label}
-                                    formatter={(value, name) => {
-                                        return [
-                                            formatCurrency(value),
-                                            name === 'balance' ? 'Current Scenario' : 'What If Scenario'
-                                        ]
-                                    }}
-                                />
-                                <Legend 
-                                    formatter={(value) => {
-                                        return (value === 'balance') ? 'Current Scenario' : 'What If Scenario'
-                                    }}
-                                    verticalAlign="top"
-                                />
-                                <Line
-                                    type="monotone"
-                                    dataKey="balance"
-                                    stroke='#3b82f6'
-                                    strokeWidth={3}
-                                    dot={(props) => {
-                                        if (props.payload.age === inputs.currentAge + results.yearsUntilRetirement) {
-                                            return <circle cx={props.cx} cy={props.cy} r={5} fill="#3b82f6" />  
+                                        {whatIfResults &&
+                                            <Line
+                                                type="monotone"
+                                                dataKey="whatIfBalance"
+                                                stroke="#388143"
+                                                strokeWidth={3}
+                                                dot={(props) => {
+                                                    if (props.payload.age === inputs.currentAge + whatIfResults.yearsUntilRetirement) {
+                                                        return <circle cx={props.cx} cy={props.cy} r={5} fill="#388143" />
+                                                    }
+                                                    return null
+                                                }}
+                                            />
+                                        
                                         }
-                                        return null
-                                    }}
-                                />
 
-                                {whatIfResults &&
-                                    <Line
-                                        type="monotone"
-                                        dataKey="whatIfBalance"
-                                        stroke="#388143"
-                                        strokeWidth={3}
-                                        dot={(props) => {
-                                            if (props.payload.age === inputs.currentAge + whatIfResults.yearsUntilRetirement) {
-                                                return <circle cx={props.cx} cy={props.cy} r={5} fill="#388143" />
-                                            }
-                                            return null
-                                        }}
+                                    </LineChart>
+                                </ResponsiveContainer>
+
+                            :
+                                <div className="flex items-center justify-center h-125">
+                                    <p>Enter your details and click Calculate to see your savings projection.</p>
+                                </div>
+                            }
+                        </div>
+                    {/* Closes Chart Card */}
+                    </div>
+                    {/* Table Card */}
+                    {results &&
+                        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6"> 
+                            <table className="w-full">
+                                <thead>
+                                    <tr>
+                                        <th className="py-3 px-4 text-left text-white bg-emerald-600 rounded-l-md">Metric</th>
+                                        <th className="py-3 px-4 text-left text-white bg-emerald-600">Current Savings</th>
+                                        {whatIfResults &&
+                                            <>
+                                                <th className="py-3 px-4 text-left text-white bg-emerald-600">What If</th>
+                                                <th className="py-3 px-4 text-left text-white bg-emerald-600 rounded-r-md">Impact</th>
+                                            </>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
+                                    <TableRow 
+                                        metric="Years Until retirement" 
+                                        value={results.yearsUntilRetirement}
+                                        whatIfValue={whatIfResults ? whatIfResults.yearsUntilRetirement : undefined}
+                                        impact={whatIfResults ? formatImpact(results.yearsUntilRetirement, whatIfResults.yearsUntilRetirement, false) : undefined} 
                                     />
-                                
-                                }
-
-                            </LineChart>
-                        </ResponsiveContainer>
+                                    <TableRow 
+                                        metric="Total Contributions" 
+                                        value={ formatCurrency(results.totalContributions) }
+                                        whatIfValue={whatIfResults ?  formatCurrency(whatIfResults.totalContributions) : undefined}
+                                        impact={whatIfResults ? formatImpact(results.totalContributions, whatIfResults.totalContributions) : undefined}
+                                    />
+                                    <TableRow 
+                                        metric="Interest Earned" 
+                                        value={ formatCurrency(results.interestEarned) }
+                                        whatIfValue={ whatIfResults ? formatCurrency(whatIfResults.interestEarned) : undefined }
+                                        impact={whatIfResults ? formatImpact(results.interestEarned, whatIfResults.interestEarned) : undefined} 
+                                    />
+                                    <TableRow 
+                                        metric="Total Savings at Retirement" 
+                                        value={ formatCurrency(results.totalSavingsAtRetirement) }
+                                        whatIfValue={whatIfResults ? formatCurrency(whatIfResults.totalSavingsAtRetirement) : undefined}
+                                        impact={whatIfResults ? formatImpact(results.totalSavingsAtRetirement, whatIfResults.totalSavingsAtRetirement) : undefined} 
+                                    />
+                                    <TableRow 
+                                        metric="Inflation-Adjusted Savings (Today's $)" 
+                                        value={ formatCurrency(results.inflationAdjustedSavings) }
+                                        whatIfValue={whatIfResults ? formatCurrency(whatIfResults.inflationAdjustedSavings) : undefined}
+                                        impact={whatIfResults ? formatImpact(results.inflationAdjustedSavings, whatIfResults.inflationAdjustedSavings) : undefined}
+                                    />
+                                    <TableRow 
+                                        metric="Sustainable Monthly Withdrawal" 
+                                        value={ formatCurrency(results.sustainableMonthlyWithdrawal) }
+                                        whatIfValue={whatIfResults ? formatCurrency(whatIfResults.sustainableMonthlyWithdrawal) : undefined}
+                                        impact={whatIfResults ? formatImpact(results.sustainableMonthlyWithdrawal, whatIfResults.sustainableMonthlyWithdrawal) : undefined} 
+                                    />
+                                    <TableRow 
+                                        metric="Monthly Income Need at Retirement" 
+                                        value={ formatCurrency(results.monthlyIncomeNeeded) }
+                                        whatIfValue={whatIfResults ? formatCurrency(whatIfResults.monthlyIncomeNeeded) : undefined}
+                                        impact={whatIfResults ? formatImpact(results.monthlyIncomeNeeded, whatIfResults.monthlyIncomeNeeded) : undefined} 
+                                    />
+                                    <TableRow 
+                                        metric="Monthly Surplus / Deficit" 
+                                        value={ formatCurrency(results.monthlySurplusDeficit) } 
+                                        whatIfValue={whatIfResults ? formatCurrency(whatIfResults.monthlySurplusDeficit) : undefined}
+                                        impact={whatIfResults ? formatImpact(results.monthlySurplusDeficit, whatIfResults.monthlySurplusDeficit) : undefined}
+                                    />
+                                    <TableRow 
+                                        metric="Balance at End of Life Expectancy"
+                                        value={ formatCurrency(results.endOfLifeBalance)}
+                                        whatIfValue={whatIfResults ? formatCurrency(whatIfResults.endOfLifeBalance) : undefined}
+                                        impact={whatIfResults ? formatImpact(results.endOfLifeBalance, whatIfResults.endOfLifeBalance) : undefined}
+                                    />
+                                    <TableRow 
+                                        metric="Retirement Readiness" 
+                                        value={ results.retirementReadiness } 
+                                        whatIfValue={whatIfResults ? whatIfResults.retirementReadiness : undefined}
+                                    />
+                                </tbody>
+                        
+                            </table>
+                        </div>
                     }
+                {/* Closes Right Column Wrapper */}
                 </div>
             </div>
-            <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 mt-6">
-                {results && <table className="w-full">
-                    <thead>
-                        <tr>
-                            <th className="py-3 px-4 text-left text-white bg-emerald-600 rounded-l-md">Metric</th>
-                            <th className="py-3 px-4 text-left text-white bg-emerald-600">Current Savings</th>
-                            {whatIfResults &&
-                                <>
-                                    <th className="py-3 px-4 text-left text-white bg-emerald-600">What If</th>
-                                    <th className="py-3 px-4 text-left text-white bg-emerald-600 rounded-r-md">Impact</th>
-                                </>
-                            }
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                        <TableRow 
-                            metric="Years Until retirement" 
-                            value={results.yearsUntilRetirement}
-                            whatIfValue={whatIfResults ? whatIfResults.yearsUntilRetirement : undefined}
-                            impact={whatIfResults ? formatImpact(results.yearsUntilRetirement, whatIfResults.yearsUntilRetirement, false) : undefined} 
-                        />
-                        <TableRow 
-                            metric="Total Contributions" 
-                            value={ formatCurrency(results.totalContributions) }
-                            whatIfValue={whatIfResults ?  formatCurrency(whatIfResults.totalContributions) : undefined}
-                            impact={whatIfResults ? formatImpact(results.totalContributions, whatIfResults.totalContributions) : undefined}
-                        />
-                        <TableRow 
-                            metric="Interest Earned" 
-                            value={ formatCurrency(results.interestEarned) }
-                            whatIfValue={ whatIfResults ? formatCurrency(whatIfResults.interestEarned) : undefined }
-                            impact={whatIfResults ? formatImpact(results.interestEarned, whatIfResults.interestEarned) : undefined} 
-                        />
-                        <TableRow 
-                            metric="Total Savings at Retirement" 
-                            value={ formatCurrency(results.totalSavingsAtRetirement) }
-                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.totalSavingsAtRetirement) : undefined}
-                            impact={whatIfResults ? formatImpact(results.totalSavingsAtRetirement, whatIfResults.totalSavingsAtRetirement) : undefined} 
-                        />
-                        <TableRow 
-                            metric="Inflation-Adjusted Savings (Today's $)" 
-                            value={ formatCurrency(results.inflationAdjustedSavings) }
-                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.inflationAdjustedSavings) : undefined}
-                            impact={whatIfResults ? formatImpact(results.inflationAdjustedSavings, whatIfResults.inflationAdjustedSavings) : undefined}
-                        />
-                        <TableRow 
-                            metric="Sustainable Monthly Withdrawal" 
-                            value={ formatCurrency(results.sustainableMonthlyWithdrawal) }
-                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.sustainableMonthlyWithdrawal) : undefined}
-                            impact={whatIfResults ? formatImpact(results.sustainableMonthlyWithdrawal, whatIfResults.sustainableMonthlyWithdrawal) : undefined} 
-                        />
-                        <TableRow 
-                            metric="Monthly Income Need at Retirement" 
-                            value={ formatCurrency(results.monthlyIncomeNeeded) }
-                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.monthlyIncomeNeeded) : undefined}
-                            impact={whatIfResults ? formatImpact(results.monthlyIncomeNeeded, whatIfResults.monthlyIncomeNeeded) : undefined} 
-                        />
-                        <TableRow 
-                            metric="Monthly Surplus / Deficit" 
-                            value={ formatCurrency(results.monthlySurplusDeficit) } 
-                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.monthlySurplusDeficit) : undefined}
-                            impact={whatIfResults ? formatImpact(results.monthlySurplusDeficit, whatIfResults.monthlySurplusDeficit) : undefined}
-                        />
-                        <TableRow 
-                            metric="Balance at End of Life Expectancy"
-                            value={ formatCurrency(results.endOfLifeBalance)}
-                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.endOfLifeBalance) : undefined}
-                            impact={whatIfResults ? formatImpact(results.endOfLifeBalance, whatIfResults.endOfLifeBalance) : undefined}
-                        />
-                        <TableRow 
-                            metric="Retirement Readiness" 
-                            value={ results.retirementReadiness } 
-                            whatIfValue={whatIfResults ? whatIfResults.retirementReadiness : undefined}
-                        />
-                    </tbody>
-                
-                </table>}
-            </div>
+
         </div>
         </>
     )
