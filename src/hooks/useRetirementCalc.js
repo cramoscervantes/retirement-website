@@ -18,6 +18,16 @@ function useRetirementCalc() {
 
     const [results, setResults] = useState(null)
 
+    const [whatIfFields, setWhatIfFields] = useState({
+        retirementAge: "",
+        currentSavings: "",
+        monthlyContribution: "",
+        preRetirementRate: "",
+        monthlyRetirementBudget: "",
+    })
+
+    const [whatIfResults, setWhatIfResults] = useState(null)
+
     function handleChange(event) {
         const name = event.target.name
         const value = Number(event.target.value)
@@ -28,11 +38,34 @@ function useRetirementCalc() {
         })
     }
 
-    function calculate() {
-        setResults(calculateRetirement(inputs))
+    function handleWhatIfChange(event) {
+        const name = event.target.name
+        const value = event.target.value
+
+        setWhatIfFields({
+            ...whatIfFields,
+            [name]: value
+        })
     }
 
-    return { inputs, results, handleChange, calculate }
+    function calculate() {
+        setResults(calculateRetirement(inputs))
+
+        const mergedInputs = { ...inputs }
+
+        for (const [name, value] of Object.entries(whatIfFields)) {
+            if (value != "") {
+                mergedInputs[name] = Number(value)
+            }
+        }
+
+        const anyFilled = Object.values(whatIfFields).some(v => v !== "")
+        if (anyFilled) {
+            setWhatIfResults(calculateRetirement(mergedInputs))
+        }
+    }
+
+    return { inputs, results, handleChange, calculate, whatIfFields, whatIfResults, handleWhatIfChange }
 }
 
 export default useRetirementCalc

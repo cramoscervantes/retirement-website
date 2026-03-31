@@ -1,15 +1,29 @@
+import { useState } from 'react'
 import useRetirementCalc from '../hooks/useRetirementCalc'
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import FormField from '../components/FormField'
 import TableRow from '../components/TableRow'
+import { formatCurrency, formatImpact } from '../utils/formatters'
 
 function Calculator() {
-    const { inputs, results, handleChange, calculate } = useRetirementCalc()
+    const { inputs, results, handleChange, calculate, whatIfFields, whatIfResults, handleWhatIfChange } = useRetirementCalc()
+    
+    // What if Menu Toggle
+    const [ whatIfOpen, setWhatIfOpen ] = useState(false)
+
+    const chartData = results
+        ? results.yearByYearData.map((entry, index) => ({
+            age: entry.age,
+            balance: entry.balance,
+
+            whatIfBalance: whatIfResults ? whatIfResults.yearByYearData[index]?.balance : undefined
+        }))
+        : null
 
     return (
         <>
         <div className="bg-slate-100 dark:bg-slate-900 min-h-screen p-6">
-        <h1 className="text-4xl text-center font-bold mb-6 text-slate-900 dark:text-white">Retirement Calculator</h1>
+        <h1 className="text-4xl text-center font-bold mb-6 text-slate-700 dark:text-slate-300">Retirement Calculator</h1>
             <div className="flex gap-6 flex-wrap">
                 <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 max-w-sm min-w-110">
                     <form className="grid grid-cols-2 gap-4">
@@ -25,6 +39,26 @@ function Calculator() {
                         <FormField label="Monthly Retirement Budget (% of current income)" name="monthlyRetirementBudget" value={inputs.monthlyRetirementBudget} onChange={handleChange} colSpan={true} />
                         <FormField label="Other Monthly Retirement Income ($)" name="otherMonthlyIncome" value={inputs.otherMonthlyIncome} onChange={handleChange} colSpan={true} />
                         <div className="col-span-2">
+                            <button className="px-4 py-2 border-2 border-emerald-600 rounded-md w-full flex justify-between hover:bg-slate-100 dark:hover:bg-slate-900" type="button" onClick={ () => setWhatIfOpen(!whatIfOpen) }>
+                                <span className="text-emerald-600 font-bold">What If Scenario</span>
+                                <span className="text-emerald-600">{ whatIfOpen ? '▲' : '▼' }</span>
+                            </button>
+
+                                {whatIfOpen &&
+                                    <div className="border-2 border-dashed border-emerald-600 rounded-md border-t-0">
+                                        <p className="text-slate-700 dark:text-slate-300 p-2 text-sm italic">Leave any field blank to use your main scenario value.</p>
+
+                                        <div className="grid grid-cols-2 gap-4 p-2">
+                                            <FormField label="Retirement Age" name="retirementAge" value={whatIfFields.retirementAge} onChange={handleWhatIfChange} />
+                                            <FormField label="Current Savings ($)" name="currentSavings" value={whatIfFields.currentSavings} onChange={handleWhatIfChange} />
+                                            <FormField label="Monthly Contribution ($)" name="monthlyContribution" value={whatIfFields.monthlyContribution} onChange={handleWhatIfChange} colSpan={true} />
+                                            <FormField label="Pre-Retirement Rate of Return (%)" name="preRetirementRate" value={whatIfFields.preRetirementRate} onChange={handleWhatIfChange} colSpan={true} />
+                                            <FormField label="Monthly Retirement Budget (% of income)" name="monthlyRetirementBudget" value={whatIfFields.monthlyRetirementBudget} onChange={handleWhatIfChange} colSpan={true} />
+                                        </div>
+                                    </div>
+                                }
+                        </div>
+                        <div className="col-span-2">
                         <button className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-md text-white w-full" type="button" onClick={calculate}>Calculate</button>
                         </div>
                     </form>
@@ -36,9 +70,9 @@ function Calculator() {
                             <LineChart
                                 width={800}
                                 height={400}
-                                data={results.yearByYearData}
+                                data={chartData}
                             >
-                                <CartesianGrid strokeDasharray="3 3" stroke="#000000" />
+                                <CartesianGrid vertical={false} stroke="#D9DDDC" />
                                 <XAxis dataKey="age" />
                                 <YAxis width={80} />
                                 <Tooltip />
@@ -47,6 +81,15 @@ function Calculator() {
                                     dataKey="balance"
                                     stroke='#388143'
                                 />
+
+                                {whatIfResults &&
+                                    <Line
+                                        type="monotone"
+                                        dataKey="whatIfBalance"
+                                        stroke="#e63946"
+                                    />
+                                
+                                }
 
                             </LineChart>
                         </ResponsiveContainer>
@@ -58,19 +101,69 @@ function Calculator() {
                     <thead>
                         <tr>
                             <th className="py-3 px-4 text-left text-white bg-emerald-600 rounded-l-md">Metric</th>
-                            <th className="py-3 px-4 text-left text-white bg-emerald-600 rounded-r-md">Current Savings</th>
+                            <th className="py-3 px-4 text-left text-white bg-emerald-600">Current Savings</th>
+                            {whatIfResults &&
+                                <>
+                                    <th className="py-3 px-4 text-left text-white bg-emerald-600">What If</th>
+                                    <th className="py-3 px-4 text-left text-white bg-emerald-600 rounded-r-md">Impact</th>
+                                </>
+                            }
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                        <TableRow metric="Years Until retirement" value={results.yearsUntilRetirement} />
-                        <TableRow metric="Total Contributions" value={ '$' + results.totalContributions.toLocaleString('en-US', { maximumFractionDigits: 0 }) } />
-                        <TableRow metric="Interest Earned" value={ '$' + results.interestEarned.toLocaleString('en-US', { maximumFractionDigits: 0 }) } />
-                        <TableRow metric="Total Savings at Retirement" value={ '$' + results.totalSavingsAtRetirement.toLocaleString('en-US', { maximumFractionDigits: 0 }) } />
-                        <TableRow metric="Inflation-Adjusted Savings (Today's $)" value={ '$' + results.inflationAdjustedSavings.toLocaleString('en-US', { maximumFractionDigits: 0 }) } />
-                        <TableRow metric="Sustainable Monthly Withdrawal" value={ '$' + results.sustainableMonthlyWithdrawal.toLocaleString('en-US', { maximumFractionDigits: 0 }) } />
-                        <TableRow metric="Monthly Income Need at Retirement" value={ '$' + results.monthlyIncomeNeeded.toLocaleString('en-US', { maximumFractionDigits: 0 }) } />
-                        <TableRow metric="Monthly Surplus / Deficit" value={ '$' + results.monthlySurplusDeficit.toLocaleString('en-US', { maximumFractionDigits:0 }) } />
-                        <TableRow metric="Retirement Readiness" value={ results.retirementReadiness } />
+                        <TableRow 
+                            metric="Years Until retirement" 
+                            value={results.yearsUntilRetirement}
+                            whatIfValue={whatIfResults ? whatIfResults.yearsUntilRetirement : undefined}
+                            impact={whatIfResults ? formatImpact(results.yearsUntilRetirement, whatIfResults.yearsUntilRetirement, false) : undefined} 
+                        />
+                        <TableRow 
+                            metric="Total Contributions" 
+                            value={ formatCurrency(results.totalContributions) }
+                            whatIfValue={whatIfResults ?  formatCurrency(whatIfResults.totalContributions) : undefined}
+                            impact={whatIfResults ? formatImpact(results.totalContributions, whatIfResults.totalContributions) : undefined}
+                        />
+                        <TableRow 
+                            metric="Interest Earned" 
+                            value={ formatCurrency(results.interestEarned) }
+                            whatIfValue={ whatIfResults ? formatCurrency(whatIfResults.interestEarned) : undefined }
+                            impact={whatIfResults ? formatImpact(results.interestEarned, whatIfResults.interestEarned) : undefined} 
+                        />
+                        <TableRow 
+                            metric="Total Savings at Retirement" 
+                            value={ formatCurrency(results.totalSavingsAtRetirement) }
+                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.totalSavingsAtRetirement) : undefined}
+                            impact={whatIfResults ? formatImpact(results.totalSavingsAtRetirement, whatIfResults.totalSavingsAtRetirement) : undefined} 
+                        />
+                        <TableRow 
+                            metric="Inflation-Adjusted Savings (Today's $)" 
+                            value={ formatCurrency(results.inflationAdjustedSavings) }
+                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.inflationAdjustedSavings) : undefined}
+                            impact={whatIfResults ? formatImpact(results.inflationAdjustedSavings, whatIfResults.inflationAdjustedSavings) : undefined}
+                        />
+                        <TableRow 
+                            metric="Sustainable Monthly Withdrawal" 
+                            value={ formatCurrency(results.sustainableMonthlyWithdrawal) }
+                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.sustainableMonthlyWithdrawal) : undefined}
+                            impact={whatIfResults ? formatImpact(results.sustainableMonthlyWithdrawal, whatIfResults.sustainableMonthlyWithdrawal) : undefined} 
+                        />
+                        <TableRow 
+                            metric="Monthly Income Need at Retirement" 
+                            value={ formatCurrency(results.monthlyIncomeNeeded) }
+                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.monthlyIncomeNeeded) : undefined}
+                            impact={whatIfResults ? formatImpact(results.monthlyIncomeNeeded, whatIfResults.monthlyIncomeNeeded) : undefined} 
+                        />
+                        <TableRow 
+                            metric="Monthly Surplus / Deficit" 
+                            value={ formatCurrency(results.monthlySurplusDeficit) } 
+                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.monthlySurplusDeficit) : undefined}
+                            impact={whatIfResults ? formatImpact(results.monthlySurplusDeficit, whatIfResults.monthlySurplusDeficit) : undefined}
+                        />
+                        <TableRow 
+                            metric="Retirement Readiness" 
+                            value={ results.retirementReadiness } 
+                            whatIfValue={whatIfResults ? whatIfResults.retirementReadiness : undefined}
+                        />
                     </tbody>
                 
                 </table>}
