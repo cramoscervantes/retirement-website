@@ -3,7 +3,7 @@ import useRetirementCalc from '../hooks/useRetirementCalc'
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import FormField from '../components/FormField'
 import TableRow from '../components/TableRow'
-import { formatCurrency, formatImpact } from '../utils/formatters'
+import { formatCurrency, formatImpact, formatAxisCurrency } from '../utils/formatters'
 
 function Calculator() {
     const { inputs, results, handleChange, calculate, whatIfFields, whatIfResults, handleWhatIfChange } = useRetirementCalc()
@@ -74,19 +74,43 @@ function Calculator() {
                             >
                                 <CartesianGrid vertical={false} stroke="#D9DDDC" />
                                 <XAxis dataKey="age" />
-                                <YAxis width={80} />
-                                <Tooltip />
+                                <YAxis width={80} tickFormatter={formatAxisCurrency} />
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#334155', border: 'none' }}
+                                    labelStyle={{ color: 'white' }} 
+                                    labelFormatter={(label) => 'Age: ' + label}
+                                    formatter={(value, name) => {
+                                        return [
+                                            formatCurrency(value),
+                                            name === 'balance' ? 'Current Scenario' : 'What If Scenario'
+                                        ]
+                                    }}
+                                />
                                 <Line
                                     type="monotone"
                                     dataKey="balance"
-                                    stroke='#388143'
+                                    stroke='#3b82f6'
+                                    strokeWidth={3}
+                                    dot={(props) => {
+                                        if (props.payload.age === inputs.currentAge + results.yearsUntilRetirement) {
+                                            return <circle cx={props.cx} cy={props.cy} r={5} fill="#3b82f6" />  
+                                        }
+                                        return null
+                                    }}
                                 />
 
                                 {whatIfResults &&
                                     <Line
                                         type="monotone"
                                         dataKey="whatIfBalance"
-                                        stroke="#e63946"
+                                        stroke="#388143"
+                                        strokeWidth={3}
+                                        dot={(props) => {
+                                            if (props.payload.age === inputs.currentAge + whatIfResults.yearsUntilRetirement) {
+                                                return <circle cx={props.cx} cy={props.cy} r={5} fill="#388143" />
+                                            }
+                                            return null
+                                        }}
                                     />
                                 
                                 }
@@ -158,6 +182,12 @@ function Calculator() {
                             value={ formatCurrency(results.monthlySurplusDeficit) } 
                             whatIfValue={whatIfResults ? formatCurrency(whatIfResults.monthlySurplusDeficit) : undefined}
                             impact={whatIfResults ? formatImpact(results.monthlySurplusDeficit, whatIfResults.monthlySurplusDeficit) : undefined}
+                        />
+                        <TableRow 
+                            metric="Balance at End of Life Expectancy"
+                            value={ formatCurrency(results.endOfLifeBalance)}
+                            whatIfValue={whatIfResults ? formatCurrency(whatIfResults.endOfLifeBalance) : undefined}
+                            impact={whatIfResults ? formatImpact(results.endOfLifeBalance, whatIfResults.endOfLifeBalance) : undefined}
                         />
                         <TableRow 
                             metric="Retirement Readiness" 

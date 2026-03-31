@@ -49,7 +49,7 @@ export function calculateRetirement(inputs) {
         balance = newBalance
 
         // inflation withdraw
-        const annualWithdrawal = netMonthlyWithdrawl * 12 * Math.pow(1 + inflationRate / 100, i)
+        const annualWithdrawal = netMonthlyWithdrawl * 12 * Math.pow(1 + inflationRate / 100, yearsUntilRetirement + i)
         balance = balance - annualWithdrawal
 
         if ( balance < 0 ) {
@@ -62,6 +62,9 @@ export function calculateRetirement(inputs) {
         yearByYearData.push({ age: retirementAge + i, balance: Math.round(balance) })
     }
 
+    // end of life balance
+    const endOfLifeBalance = yearByYearData.at(-1).balance
+
     return {
         totalSavingsAtRetirement,
         yearByYearData,
@@ -73,6 +76,7 @@ export function calculateRetirement(inputs) {
         monthlyIncomeNeeded,
         monthlySurplusDeficit,
         retirementReadiness,
-        yearsUntilRetirement
+        yearsUntilRetirement,
+        endOfLifeBalance
     }
 }
