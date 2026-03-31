@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import useRetirementCalc from '../hooks/useRetirementCalc'
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 import FormField from '../components/FormField'
 import TableRow from '../components/TableRow'
 import { formatCurrency, formatImpact, formatAxisCurrency } from '../utils/formatters'
@@ -103,6 +103,7 @@ function Calculator() {
                 </div>
 
                 <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 flex-1">
+                    <h2 className="text-emerald-600 text-3xl font-bold text-center p-4">Savings Growth Over Time</h2>
                     {results && 
                         <ResponsiveContainer width="100%">
                             <LineChart
@@ -123,6 +124,12 @@ function Calculator() {
                                             name === 'balance' ? 'Current Scenario' : 'What If Scenario'
                                         ]
                                     }}
+                                />
+                                <Legend 
+                                    formatter={(value) => {
+                                        return (value === 'balance') ? 'Current Scenario' : 'What If Scenario'
+                                    }}
+                                    verticalAlign="top"
                                 />
                                 <Line
                                     type="monotone"
