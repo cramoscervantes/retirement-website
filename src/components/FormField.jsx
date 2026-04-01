@@ -1,10 +1,13 @@
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+
 function FormField({ label, name, value, onChange, colSpan, placeholder }) {
     return (
         <div className={colSpan ? "col-span-2" : ""}>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+            <Label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 {label}
-            </label>
-            <input
+            </Label>
+            <Input
                 name={name}
                 value={value}
                 onChange={onChange}

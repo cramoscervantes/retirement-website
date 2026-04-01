@@ -2,8 +2,12 @@ import { useState } from 'react'
 import useRetirementCalc from '../hooks/useRetirementCalc'
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 import FormField from '../components/FormField'
-import TableRow from '../components/TableRow'
+import MetricRow from '../components/MetricRow'
 import { formatCurrency, formatImpact, formatAxisCurrency } from '../utils/formatters'
+import { Table, TableHeader, TableBody, TableHead, TableRow } from '@/components/ui/table'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+
 
 function Calculator() {
     const { inputs, results, handleChange, calculate, whatIfFields, whatIfResults, handleWhatIfChange, resetWhatIfFields } = useRetirementCalc()
@@ -25,7 +29,7 @@ function Calculator() {
         <div className="bg-slate-100 dark:bg-slate-900 min-h-screen p-6">
         <h1 className="text-4xl text-center font-bold mb-6 text-slate-700 dark:text-slate-300">Retirement Calculator</h1>
             <div className="flex gap-6 flex-wrap">
-                <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 max-w-sm min-w-110 self-start">
+                <Card className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 max-w-sm min-w-110 self-start">
                     <form className="grid grid-cols-2 gap-4">
                         <FormField label="Current Age" name="currentAge" value={inputs.currentAge} onChange={handleChange} colSpan={true} />
                         <FormField label="Annual Pre-Tax Income" name="currentIncome" value={inputs.currentIncome} onChange={handleChange} />
@@ -39,10 +43,10 @@ function Calculator() {
                         <FormField label="Monthly Retirement Budget (% of current income)" name="monthlyRetirementBudget" value={inputs.monthlyRetirementBudget} onChange={handleChange} colSpan={true} />
                         <FormField label="Other Monthly Retirement Income ($)" name="otherMonthlyIncome" value={inputs.otherMonthlyIncome} onChange={handleChange} colSpan={true} />
                         <div className="col-span-2">
-                            <button className="px-4 py-2 border-2 border-emerald-600 rounded-md w-full flex justify-between hover:bg-slate-100 dark:hover:bg-slate-900" type="button" onClick={ () => setWhatIfOpen(!whatIfOpen) }>
+                            <Button variant="outline" className="px-4 py-2 border-2 border-emerald-600 rounded-md w-full flex justify-between hover:bg-slate-100 dark:hover:bg-slate-900" type="button" onClick={ () => setWhatIfOpen(!whatIfOpen) }>
                                 <span className="text-emerald-600 font-bold">What If Scenario</span>
                                 <span className="text-emerald-600">{ whatIfOpen ? '▲' : '▼' }</span>
-                            </button>
+                            </Button>
 
                                 {whatIfOpen &&
                                     <div className="border-2 border-dashed border-emerald-600 rounded-md border-t-0">
@@ -89,173 +93,176 @@ function Calculator() {
                                             />
                                         </div>
                                         <div className="p-2">
-                                            <button  type="button" className="px-4 py-2 border-2 border-emerald-600 rounded-md w-full hover:bg-slate-100 dark:hover:bg-slate-900 text-emerald-600 font-bold" onClick={resetWhatIfFields}>
+                                            <Button  type="button" variant="outline" className="px-4 py-2 border-2 border-emerald-600 rounded-md w-full hover:bg-slate-100 dark:hover:bg-slate-900 text-emerald-600 font-bold" onClick={resetWhatIfFields}>
                                                 Clear What If Fields
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 }
                         </div>
                         <div className="col-span-2">
-                        <button className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-md text-white w-full" type="button" onClick={calculate}>Calculate</button>
+                        <Button className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-md text-white w-full" type="button" onClick={calculate}>Calculate</Button>
                         </div>
                     </form>
-                </div>
+                </Card>
                 {/* Right Column Wrapper */}
                 <div className="flex flex-col gap-6 flex-1">
                     {/* Chart Card */}
-                    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 flex flex-col min-h-150">
-                        <h2 className="text-emerald-600 text-3xl font-bold text-center p-4">Savings Growth Over Time</h2>
-                        
-        
-                        <div className="flex-1">
-                            {results
-                                ? <ResponsiveContainer width="100%" height="100%" >
-                                    <LineChart
-                                        width={800}
-                                        height={400}
-                                        data={chartData}
-                                    >
-                                        <CartesianGrid vertical={false} stroke="#D9DDDC" />
-                                        <XAxis dataKey="age" />
-                                        <YAxis width={80} tickFormatter={formatAxisCurrency} />
-                                        <Tooltip
-                                            contentStyle={{ backgroundColor: '#334155', border: 'none' }}
-                                            labelStyle={{ color: 'white' }} 
-                                            labelFormatter={(label) => 'Age: ' + label}
-                                            formatter={(value, name) => {
-                                                return [
-                                                    formatCurrency(value),
-                                                    name === 'balance' ? 'Current Scenario' : 'What If Scenario'
-                                                ]
-                                            }}
-                                        />
-                                        <Legend 
-                                            formatter={(value) => {
-                                                return (value === 'balance') ? 'Current Scenario' : 'What If Scenario'
-                                            }}
-                                            verticalAlign="top"
-                                        />
-                                        <Line
-                                            type="monotone"
-                                            dataKey="balance"
-                                            stroke='#3b82f6'
-                                            strokeWidth={3}
-                                            dot={(props) => {
-                                                if (props.payload.age === inputs.currentAge + results.yearsUntilRetirement) {
-                                                    return <circle cx={props.cx} cy={props.cy} r={5} fill="#3b82f6" />  
-                                                }
-                                                return null
-                                            }}
-                                        />
+                    <Card className="bg-white dark:bg-slate-800 rounded-lg shadow-md flex flex-col min-h-150">
+                        <CardHeader>
+                            <CardTitle className="text-emerald-600 text-3xl font-bold text-center">Savings Growth Over Time</CardTitle>
+                        </CardHeader>
 
-                                        {whatIfResults &&
+                        <CardContent className="flex-1 flex flex-col px-4">
+                            <div className="flex-1">
+                                {results
+                                    ? <ResponsiveContainer width="100%" height="100%" >
+                                        <LineChart
+                                            width={800}
+                                            height={400}
+                                            data={chartData}
+                                        >
+                                            <CartesianGrid vertical={false} stroke="#D9DDDC" />
+                                            <XAxis dataKey="age" />
+                                            <YAxis width={80} tickFormatter={formatAxisCurrency} />
+                                            <Tooltip
+                                                contentStyle={{ backgroundColor: '#334155', border: 'none' }}
+                                                labelStyle={{ color: 'white' }} 
+                                                labelFormatter={(label) => 'Age: ' + label}
+                                                formatter={(value, name) => {
+                                                    return [
+                                                        formatCurrency(value),
+                                                        name === 'balance' ? 'Current Scenario' : 'What If Scenario'
+                                                    ]
+                                                }}
+                                            />
+                                            <Legend 
+                                                formatter={(value) => {
+                                                    return (value === 'balance') ? 'Current Scenario' : 'What If Scenario'
+                                                }}
+                                                verticalAlign="top"
+                                            />
                                             <Line
                                                 type="monotone"
-                                                dataKey="whatIfBalance"
-                                                stroke="#388143"
+                                                dataKey="balance"
+                                                stroke='#3b82f6'
                                                 strokeWidth={3}
                                                 dot={(props) => {
-                                                    if (props.payload.age === inputs.currentAge + whatIfResults.yearsUntilRetirement) {
-                                                        return <circle cx={props.cx} cy={props.cy} r={5} fill="#388143" />
+                                                    if (props.payload.age === inputs.currentAge + results.yearsUntilRetirement) {
+                                                        return <circle cx={props.cx} cy={props.cy} r={5} fill="#3b82f6" />  
                                                     }
                                                     return null
                                                 }}
                                             />
-                                        
-                                        }
 
-                                    </LineChart>
-                                </ResponsiveContainer>
+                                            {whatIfResults &&
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="whatIfBalance"
+                                                    stroke="#388143"
+                                                    strokeWidth={3}
+                                                    dot={(props) => {
+                                                        if (props.payload.age === inputs.currentAge + whatIfResults.yearsUntilRetirement) {
+                                                            return <circle cx={props.cx} cy={props.cy} r={5} fill="#388143" />
+                                                        }
+                                                        return null
+                                                    }}
+                                                />
+                                            
+                                            }
 
-                            :
-                                <div className="flex items-center justify-center h-125">
-                                    <p>Enter your details and click Calculate to see your savings projection.</p>
-                                </div>
-                            }
-                        </div>
+                                        </LineChart>
+                                    </ResponsiveContainer>
+
+                                :
+                                    <div className="flex items-center justify-center h-125">
+                                        <p>Enter your details and click Calculate to see your savings projection.</p>
+                                    </div>
+                                }
+                            </div>
+                        </CardContent>
                     {/* Closes Chart Card */}
-                    </div>
+                    </Card>
                     {/* Table Card */}
                     {results &&
-                        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6"> 
-                            <table className="w-full">
-                                <thead>
-                                    <tr>
-                                        <th className="py-3 px-4 text-left text-white bg-emerald-600 rounded-l-md">Metric</th>
-                                        <th className="py-3 px-4 text-left text-white bg-emerald-600">Current Savings</th>
+                        <Card className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6"> 
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="py-3 px-4 text-white bg-emerald-600 rounded-l-md">Metric</TableHead>
+                                        <TableHead className="py-3 px-4 text-white bg-emerald-600">Current Savings</TableHead>
                                         {whatIfResults &&
                                             <>
-                                                <th className="py-3 px-4 text-left text-white bg-emerald-600">What If</th>
-                                                <th className="py-3 px-4 text-left text-white bg-emerald-600 rounded-r-md">Impact</th>
+                                                <TableHead className="py-3 px-4 text-white bg-emerald-600">What If</TableHead>
+                                                <TableHead className="py-3 px-4 text-white bg-emerald-600 rounded-r-md">Impact</TableHead>
                                             </>
                                         }
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                                    <TableRow 
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody className="divide-y divide-slate-200 dark:divide-slate-700">
+                                    <MetricRow 
                                         metric="Years Until retirement" 
                                         value={results.yearsUntilRetirement}
                                         whatIfValue={whatIfResults ? whatIfResults.yearsUntilRetirement : undefined}
                                         impact={whatIfResults ? formatImpact(results.yearsUntilRetirement, whatIfResults.yearsUntilRetirement, false) : undefined} 
                                     />
-                                    <TableRow 
+                                    <MetricRow
                                         metric="Total Contributions" 
                                         value={ formatCurrency(results.totalContributions) }
                                         whatIfValue={whatIfResults ?  formatCurrency(whatIfResults.totalContributions) : undefined}
                                         impact={whatIfResults ? formatImpact(results.totalContributions, whatIfResults.totalContributions) : undefined}
                                     />
-                                    <TableRow 
+                                    <MetricRow
                                         metric="Interest Earned" 
                                         value={ formatCurrency(results.interestEarned) }
                                         whatIfValue={ whatIfResults ? formatCurrency(whatIfResults.interestEarned) : undefined }
                                         impact={whatIfResults ? formatImpact(results.interestEarned, whatIfResults.interestEarned) : undefined} 
                                     />
-                                    <TableRow 
+                                    <MetricRow
                                         metric="Total Savings at Retirement" 
                                         value={ formatCurrency(results.totalSavingsAtRetirement) }
                                         whatIfValue={whatIfResults ? formatCurrency(whatIfResults.totalSavingsAtRetirement) : undefined}
                                         impact={whatIfResults ? formatImpact(results.totalSavingsAtRetirement, whatIfResults.totalSavingsAtRetirement) : undefined} 
                                     />
-                                    <TableRow 
+                                    <MetricRow 
                                         metric="Inflation-Adjusted Savings (Today's $)" 
                                         value={ formatCurrency(results.inflationAdjustedSavings) }
                                         whatIfValue={whatIfResults ? formatCurrency(whatIfResults.inflationAdjustedSavings) : undefined}
                                         impact={whatIfResults ? formatImpact(results.inflationAdjustedSavings, whatIfResults.inflationAdjustedSavings) : undefined}
                                     />
-                                    <TableRow 
+                                    <MetricRow 
                                         metric="Sustainable Monthly Withdrawal" 
                                         value={ formatCurrency(results.sustainableMonthlyWithdrawal) }
                                         whatIfValue={whatIfResults ? formatCurrency(whatIfResults.sustainableMonthlyWithdrawal) : undefined}
                                         impact={whatIfResults ? formatImpact(results.sustainableMonthlyWithdrawal, whatIfResults.sustainableMonthlyWithdrawal) : undefined} 
                                     />
-                                    <TableRow 
+                                    <MetricRow 
                                         metric="Monthly Income Need at Retirement" 
                                         value={ formatCurrency(results.monthlyIncomeNeeded) }
                                         whatIfValue={whatIfResults ? formatCurrency(whatIfResults.monthlyIncomeNeeded) : undefined}
                                         impact={whatIfResults ? formatImpact(results.monthlyIncomeNeeded, whatIfResults.monthlyIncomeNeeded) : undefined} 
                                     />
-                                    <TableRow 
+                                    <MetricRow 
                                         metric="Monthly Surplus / Deficit" 
                                         value={ formatCurrency(results.monthlySurplusDeficit) } 
                                         whatIfValue={whatIfResults ? formatCurrency(whatIfResults.monthlySurplusDeficit) : undefined}
                                         impact={whatIfResults ? formatImpact(results.monthlySurplusDeficit, whatIfResults.monthlySurplusDeficit) : undefined}
                                     />
-                                    <TableRow 
+                                    <MetricRow 
                                         metric="Balance at End of Life Expectancy"
                                         value={ formatCurrency(results.endOfLifeBalance)}
                                         whatIfValue={whatIfResults ? formatCurrency(whatIfResults.endOfLifeBalance) : undefined}
                                         impact={whatIfResults ? formatImpact(results.endOfLifeBalance, whatIfResults.endOfLifeBalance) : undefined}
                                     />
-                                    <TableRow 
+                                    <MetricRow 
                                         metric="Retirement Readiness" 
                                         value={ results.retirementReadiness } 
                                         whatIfValue={whatIfResults ? whatIfResults.retirementReadiness : undefined}
                                     />
-                                </tbody>
+                                </TableBody>
                         
-                            </table>
-                        </div>
+                            </Table>
+                        </Card>
                     }
                 {/* Closes Right Column Wrapper */}
                 </div>
