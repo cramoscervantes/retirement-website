@@ -39,9 +39,7 @@ export function calculateRetirement(inputs) {
         / (1 - Math.pow(1 + monthlyPostRetirementRate, -(yearsInRetirement * 12)) )
     const monthlyIncomeNeeded = 
         netMonthlyWithdrawl * Math.pow(1 + inflationRate / 100, yearsUntilRetirement)
-    const monthlySurplusDeficit = sustainableMonthlyWithdrawal - monthlyIncomeNeeded
-    const retirementReadiness = monthlySurplusDeficit >= 0 ? "On track" : "Shortfall"
-    
+    let monthlySurplusDeficit = sustainableMonthlyWithdrawal - monthlyIncomeNeeded
 
     // Phase 2 Decumulation
     for (let i = 1; i <= yearsInRetirement; i++) {
@@ -61,6 +59,11 @@ export function calculateRetirement(inputs) {
 
         yearByYearData.push({ age: retirementAge + i, balance: Math.round(balance) })
     }
+
+    const retirementReadiness = ageRanOutOfMoney === null ? "On track" : "Shortfall"
+    if (ageRanOutOfMoney !== null) {
+    monthlySurplusDeficit = -Math.abs(monthlySurplusDeficit)
+}
 
     // end of life balance
     const endOfLifeBalance = yearByYearData.at(-1).balance

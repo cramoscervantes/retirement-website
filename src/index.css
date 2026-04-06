@@ -6,6 +6,17 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
+    /* Custom Classes */
+    --color-page-bg: var(--color-page-bg);
+    --color-brand: var(--color-brand);
+    --color-brand-hover: var(--color-brand-hover);
+    --color-surface: var(--color-surface);
+    --color-text-primary: var(--color-text-primary);
+    --color-text-muted: var(--color-text-muted);
+    --color-border-subtle: var(--color-border-subtle);
+    --color-border-card: var(--color-border-card);
+    --shadow-card: 4px 4px 8px rgba(0, 0, 0, 0.50);
+
 
     --font-heading: var(--font-sans);
 
@@ -89,6 +100,16 @@
 }
 
 :root {
+    /* Custom classes for testing color scheme */
+    --color-page-bg: oklch(0.944 0.006 100);       /* light grey page background oklch(0.96 0 0) */
+    --color-surface: oklch(1 0 0);          /* white cards oklch(1 0 0) */
+    --color-brand: oklch(0.55 0.15 162);    /* emerald oklch(0.55 0.15 162) */
+    --color-brand-hover: oklch(0.48 0.15 162); /* darker emerald for hover oklch(0.48 0.15 162) */
+    --color-text-primary: oklch(0.165 0.003 100);  /* dark grey text oklch(0.35 0 0) */
+    --color-text-muted: oklch(0.726 0.002 100);    /* lighter grey for labels oklch(0.55 0 0) */
+    --color-border-subtle: oklch(0.165 0.003 100);  /* light borders oklch(0.9 0 0) */
+    --color-border-card: oklch(0.165 0.003 100);
+
 
     --background: oklch(1 0 0);
 

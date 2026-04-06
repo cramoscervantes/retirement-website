@@ -26,10 +26,10 @@ function Calculator() {
 
     return (
         <>
-        <div className="bg-slate-100 dark:bg-slate-900 min-h-screen p-6">
-        <h1 className="text-4xl text-center font-bold mb-6 text-slate-700 dark:text-slate-300">Retirement Calculator</h1>
+        <div className="bg-page-bg dark:bg-slate-900 min-h-screen p-6">
+        <h1 className="text-4xl text-center font-bold mb-6 text-text-primary dark:text-slate-300">Retirement Calculator</h1>
             <div className="flex gap-6 flex-wrap">
-                <Card className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6 max-w-sm min-w-110 self-start">
+                <Card className="bg-surface dark:bg-slate-800 rounded-lg shadow-card p-6 max-w-sm min-w-110 self-start ring-1 ring-border-card">
                     <form className="grid grid-cols-2 gap-4">
                         <FormField label="Current Age" name="currentAge" value={inputs.currentAge} onChange={handleChange} colSpan={true} />
                         <FormField label="Annual Pre-Tax Income" name="currentIncome" value={inputs.currentIncome} onChange={handleChange} />
@@ -43,14 +43,14 @@ function Calculator() {
                         <FormField label="Monthly Retirement Budget (% of current income)" name="monthlyRetirementBudget" value={inputs.monthlyRetirementBudget} onChange={handleChange} colSpan={true} />
                         <FormField label="Other Monthly Retirement Income ($)" name="otherMonthlyIncome" value={inputs.otherMonthlyIncome} onChange={handleChange} colSpan={true} />
                         <div className="col-span-2">
-                            <Button variant="outline" className="px-4 py-2 border-2 border-emerald-600 rounded-md w-full flex justify-between hover:bg-slate-100 dark:hover:bg-slate-900" type="button" onClick={ () => setWhatIfOpen(!whatIfOpen) }>
-                                <span className="text-emerald-600 font-bold">What If Scenario</span>
-                                <span className="text-emerald-600">{ whatIfOpen ? '▲' : '▼' }</span>
+                            <Button variant="outline" className="px-4 py-2 border-2 border-brand rounded-md w-full flex justify-between hover:bg-page-bg dark:hover:bg-slate-900" type="button" onClick={ () => setWhatIfOpen(!whatIfOpen) }>
+                                <span className="text-brand font-bold">What If Scenario</span>
+                                <span className="text-brand">{ whatIfOpen ? '▲' : '▼' }</span>
                             </Button>
 
                                 {whatIfOpen &&
-                                    <div className="border-2 border-dashed border-emerald-600 rounded-md border-t-0">
-                                        <p className="text-slate-700 dark:text-slate-300 p-2 text-sm italic">Leave any field blank to use your main scenario value.</p>
+                                    <div className="border-2 border-dashed border-brand rounded-md border-t-0">
+                                        <p className="text-text-primary dark:text-slate-300 p-2 text-sm italic">Leave any field blank to use your main scenario value.</p>
 
                                         <div className="grid grid-cols-2 gap-4 p-2">
                                             <FormField 
@@ -93,7 +93,7 @@ function Calculator() {
                                             />
                                         </div>
                                         <div className="p-2">
-                                            <Button  type="button" variant="outline" className="px-4 py-2 border-2 border-emerald-600 rounded-md w-full hover:bg-slate-100 dark:hover:bg-slate-900 text-emerald-600 font-bold" onClick={resetWhatIfFields}>
+                                            <Button  type="button" variant="outline" className="px-4 py-2 border-2 border-brand rounded-md w-full hover:bg-page-bg dark:hover:bg-slate-900 text-brand font-bold" onClick={resetWhatIfFields}>
                                                 Clear What If Fields
                                             </Button>
                                         </div>
@@ -101,16 +101,16 @@ function Calculator() {
                                 }
                         </div>
                         <div className="col-span-2">
-                        <Button className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-md text-white w-full" type="button" onClick={calculate}>Calculate</Button>
+                        <Button className="px-4 py-2 bg-brand hover:bg-brand-hover rounded-md text-white w-full" type="button" onClick={calculate}>Calculate</Button>
                         </div>
                     </form>
                 </Card>
                 {/* Right Column Wrapper */}
                 <div className="flex flex-col gap-6 flex-1">
                     {/* Chart Card */}
-                    <Card className="bg-white dark:bg-slate-800 rounded-lg shadow-md flex flex-col min-h-150">
+                    <Card className="bg-surface dark:bg-slate-800 rounded-lg shadow-card flex flex-col min-h-150 ring-1 ring-border-card">
                         <CardHeader>
-                            <CardTitle className="text-emerald-600 text-3xl font-bold text-center">Savings Growth Over Time</CardTitle>
+                            <CardTitle className="text-brand text-3xl font-bold text-center">Savings Growth Over Time</CardTitle>
                         </CardHeader>
 
                         <CardContent className="flex-1 flex flex-col px-4">
@@ -185,16 +185,16 @@ function Calculator() {
                     </Card>
                     {/* Table Card */}
                     {results &&
-                        <Card className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-6"> 
+                        <Card className="bg-surface dark:bg-slate-800 rounded-lg shadow-card p-6 ring-1 ring-border-card"> 
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="py-3 px-4 text-white bg-emerald-600 rounded-l-md">Metric</TableHead>
-                                        <TableHead className="py-3 px-4 text-white bg-emerald-600">Current Savings</TableHead>
+                                        <TableHead className="py-3 px-4 text-white bg-brand rounded-l-md">Metric</TableHead>
+                                        <TableHead className="py-3 px-4 text-white bg-brand">Current Savings</TableHead>
                                         {whatIfResults &&
                                             <>
-                                                <TableHead className="py-3 px-4 text-white bg-emerald-600">What If</TableHead>
-                                                <TableHead className="py-3 px-4 text-white bg-emerald-600 rounded-r-md">Impact</TableHead>
+                                                <TableHead className="py-3 px-4 text-white bg-brand">What If</TableHead>
+                                                <TableHead className="py-3 px-4 text-white bg-brand rounded-r-md">Impact</TableHead>
                                             </>
                                         }
                                     </TableRow>
