@@ -108,7 +108,7 @@ function Calculator() {
                 {/* Right Column Wrapper */}
                 <div className="flex flex-col gap-6 flex-1">
                     {/* Chart Card */}
-                    <Card className="bg-surface dark:bg-slate-800 rounded-lg shadow-card flex flex-col min-h-150 ring-1 ring-border-card">
+                    <Card className="bg-surface dark:bg-slate-800 rounded-lg shadow-card flex flex-col min-h-163 ring-1 ring-border-card">
                         <CardHeader>
                             <CardTitle className="text-brand text-3xl font-bold text-center">Savings Growth Over Time</CardTitle>
                         </CardHeader>
@@ -137,10 +137,15 @@ function Calculator() {
                                                 }}
                                             />
                                             <Legend 
-                                                formatter={(value) => {
-                                                    return (value === 'balance') ? 'Current Scenario' : 'What If Scenario'
-                                                }}
-                                                verticalAlign="top"
+                                                iconType="line"
+                                                iconSize={20}
+                                                wrapperStyle={{ fontSize: '14px', fontWeight: '600', paddingBottom: '12px' }}
+                                                formatter={(value) => (
+                                                    <span style={{ color: '#334155' }}>
+                                                        {value === 'balance' ? 'Current Scenario' : 'What If Scenario'}
+                                                    </span>
+                                                )}
+                                                verticalAlign="bottom"
                                             />
                                             <Line
                                                 type="monotone"
@@ -160,6 +165,7 @@ function Calculator() {
                                                     type="monotone"
                                                     dataKey="whatIfBalance"
                                                     stroke="#388143"
+                                                    strokeDasharray="6 3"
                                                     strokeWidth={3}
                                                     dot={(props) => {
                                                         if (props.payload.age === inputs.currentAge + whatIfResults.yearsUntilRetirement) {

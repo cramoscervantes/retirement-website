@@ -12,7 +12,7 @@ function MetricRow({ metric, value, whatIfValue, impact }) {
                     <TableCell className="py-3 px-4 text-brand">{whatIfValue}</TableCell>
                     <TableCell className="py-3 px-4 text-text-primary dark:text-slate-300">
                         {impact &&
-                            <Badge className={impact.startsWith('+') ? "rounded-xl p-1 px-2 bg-green-100 text-green-700" : "rounded-xl p-1 px-2 bg-red-100 text-red-700" }>
+                            <Badge className={impact.startsWith('+') ? "rounded-xl p-1 px-2 bg-green-100 text-green-700 text-sm" : "rounded-xl p-1 px-2 bg-red-100 text-red-700 text-sm" }>
                                 {impact}
                             </Badge>
                         }
