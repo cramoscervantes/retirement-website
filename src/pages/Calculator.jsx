@@ -27,9 +27,9 @@ function Calculator() {
     return (
         <>
         <div className="bg-page-bg dark:bg-slate-900 min-h-screen p-6">
-        <h1 className="text-4xl text-center font-bold mb-6 text-text-primary dark:text-slate-300">Retirement Calculator</h1>
             <div className="flex gap-6 flex-wrap">
                 <Card className="bg-surface dark:bg-slate-800 rounded-lg shadow-card p-6 max-w-sm min-w-110 self-start ring-1 ring-border-card">
+                    <h2 className="text-3xl font-bold font-bold text-brand dark:text-slate-300">Retirement Calculator</h2>
                     <form className="grid grid-cols-2 gap-4">
                         <FormField label="Current Age" name="currentAge" value={inputs.currentAge} onChange={handleChange} colSpan={true} />
                         <FormField label="Annual Pre-Tax Income" name="currentIncome" value={inputs.currentIncome} onChange={handleChange} />
@@ -43,7 +43,7 @@ function Calculator() {
                         <FormField label="Monthly Retirement Budget (% of current income)" name="monthlyRetirementBudget" value={inputs.monthlyRetirementBudget} onChange={handleChange} colSpan={true} />
                         <FormField label="Other Monthly Retirement Income ($)" name="otherMonthlyIncome" value={inputs.otherMonthlyIncome} onChange={handleChange} colSpan={true} />
                         <div className="col-span-2">
-                            <Button variant="outline" className="px-4 py-2 border-2 border-brand rounded-md w-full flex justify-between hover:bg-page-bg dark:hover:bg-slate-900" type="button" onClick={ () => setWhatIfOpen(!whatIfOpen) }>
+                            <Button variant="outline" className="px-4 py-2 border-2 border-brand rounded-md w-full flex justify-between hover:bg-page-bg dark:hover:bg-slate-900 cursor-pointer" type="button" onClick={ () => setWhatIfOpen(!whatIfOpen) }>
                                 <span className="text-brand font-bold">What If Scenario</span>
                                 <span className="text-brand">{ whatIfOpen ? '▲' : '▼' }</span>
                             </Button>
@@ -93,7 +93,7 @@ function Calculator() {
                                             />
                                         </div>
                                         <div className="p-2">
-                                            <Button  type="button" variant="outline" className="px-4 py-2 border-2 border-brand rounded-md w-full hover:bg-page-bg dark:hover:bg-slate-900 text-brand font-bold" onClick={resetWhatIfFields}>
+                                            <Button  type="button" variant="outline" className="px-4 py-2 border-2 border-brand rounded-md w-full hover:bg-page-bg dark:hover:bg-slate-900 text-brand font-bold cursor-pointer" onClick={resetWhatIfFields}>
                                                 Clear What If Fields
                                             </Button>
                                         </div>
@@ -101,15 +101,15 @@ function Calculator() {
                                 }
                         </div>
                         <div className="col-span-2">
-                        <Button className="px-4 py-2 bg-brand hover:bg-brand-hover rounded-md text-white w-full" type="button" onClick={calculate}>Calculate</Button>
+                        <Button className="px-4 py-2 bg-brand hover:bg-brand-hover rounded-md text-white w-full cursor-pointer" type="button" onClick={calculate}>Calculate</Button>
                         </div>
                     </form>
                 </Card>
                 {/* Right Column Wrapper */}
                 <div className="flex flex-col gap-6 flex-1">
                     {/* Chart Card */}
-                    <Card className="bg-surface dark:bg-slate-800 rounded-lg shadow-card flex flex-col min-h-163 ring-1 ring-border-card">
-                        <CardHeader>
+                    <Card className="bg-surface dark:bg-slate-800 rounded-lg shadow-card flex flex-col min-h-176 ring-1 ring-border-card">
+                        <CardHeader className="pt-1">
                             <CardTitle className="text-brand text-3xl font-bold text-center">Savings Growth Over Time</CardTitle>
                         </CardHeader>
 

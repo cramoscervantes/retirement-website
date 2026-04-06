@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { Sun, Moon } from 'lucide-react'
 
 
 
@@ -27,9 +28,9 @@ function Navbar() {
 
     function navLinkClass(isActive) {
         if ( isActive === true ) {
-            return "text-brand"
+            return "text-white bg-brand px-3 py-1 rounded-full text-sm font-medium"
         } else {
-            return "text-text-primary dark:text-white hover:text-brand"
+            return "text-text-primary dark:text-white hover:text-brand px-3 py-1 rounded-full text-sm"
         }
     }
 
@@ -45,7 +46,9 @@ function Navbar() {
             <NavLink className={({ isActive }) => navLinkClass(isActive) } to="/budget">Budget</NavLink>
             </div>
             <div className="flex flex-1 justify-end">
-            <button onClick={toggleDarkMode} className="px-4 py-2 bg-black rounded-sm hover:bg-brand-hover text-white">{isDark ? "Light Mode" : "Dark Mode"}</button>
+            <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-stone-300 dark:hover:bg-slate-700 text-text-primary dark:text-white transition-colors cursor-pointer">
+                {isDark ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
             </div>
         </nav>
     )
