@@ -37,7 +37,7 @@ function Navbar() {
     return (
         <nav className="w-full bg-page-bg dark:bg-slate-900 flex p-4 border-b border-border-subtle dark:border-slate-700 text-text-primary dark:text-white items-center">
             <div className="flex-1 flex items-center gap-2">
-            <img src="/retirement-simplified-logo-transparent.png" alt="RetirementSimplified" className="h-8" />
+            <img src={import.meta.env.BASE_URL + "retirement-simplified-logo-transparent.png"} alt="RetirementSimplified" className="h-8" />
             <p className="font-bold">RetirementSimplified</p>
             </div>
             <div className="flex flex-1 justify-center gap-6">
