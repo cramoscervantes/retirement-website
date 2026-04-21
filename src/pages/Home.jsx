@@ -5,12 +5,12 @@ function Home() {
     const base = import.meta.env.BASE_URL
 
     return (
-        <main className="bg-page-bg min-h-screen">
+        <main className="bg-page-bg dark:bg-slate-900 min-h-screen">
             <div className="max-w-7xl mx-auto px-6 py-8">
                 <section className="text-center max-w-xl mx-auto py-1">
                     <h1 className="text-5xl font-extrabold text-brand">Simplify Retirement Plannig</h1>
-                    <h2 className="text-xl text-text-primary mt-3">Are you On Track for Retirement?</h2>
-                    <p className="text-text-primary leading-relaxed m-4">When it comes to retirement 
+                    <h2 className="text-xl text-text-primary dark:text-slate-300 mt-3">Are you On Track for Retirement?</h2>
+                    <p className="text-text-primary dark:text-slate-300 leading-relaxed m-4">When it comes to retirement 
                         planning, there are many factors involved in knowing whether you are on track. 
                         Retirement Simplified helps you visually understand your retirement outlook.
                     </p>
@@ -34,7 +34,7 @@ function Home() {
                     </div>
                 </section>
                 <section className="py-16 text-center">
-                    <p className="text-3xl font-bold text-text-primary mb-4">
+                    <p className="text-3xl font-bold text-text-primary dark:text-slate-300 mb-4">
                         Don't wait — see your retirement projections today.
                     </p>
                     <button className="bg-brand text-white px-6 py-3 rounded-full hover:bg-brand-hover">
