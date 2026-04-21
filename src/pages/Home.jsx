@@ -8,7 +8,7 @@ function Home() {
         <main className="bg-page-bg dark:bg-slate-900 min-h-screen">
             <div className="max-w-7xl mx-auto px-6 py-8">
                 <section className="text-center max-w-xl mx-auto py-1">
-                    <h1 className="text-5xl font-extrabold text-brand">Simplify Retirement Plannig</h1>
+                    <h1 className="text-5xl font-extrabold text-brand">Simplify Retirement Planning</h1>
                     <h2 className="text-xl text-text-primary dark:text-slate-300 mt-3">Are you On Track for Retirement?</h2>
                     <p className="text-text-primary dark:text-slate-300 leading-relaxed m-4">When it comes to retirement 
                         planning, there are many factors involved in knowing whether you are on track. 
